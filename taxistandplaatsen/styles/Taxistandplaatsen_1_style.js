@@ -21,9 +21,15 @@ var style_Taxistandplaatsen_1 = function(feature, resolution){
         labelText = String("");
     }
     var style = [ new ol.style.Style({
-        text: new ol.style.Text({
-            text: 'I',
-            fill: new ol.style.Fill({color: 'rgba(227,26,28,1.0)'})}),
+        image: new ol.style.Icon({
+                  imgSize: [579.997, 579.997],
+                  scale: 0.0655175802633462,
+                  anchor: [19, 19],
+                  anchorXUnits: "pixels",
+                  anchorYUnits: "pixels",
+                  rotation: 0.0,
+                  src: "styles/car.svg"
+            }),
         text: createTextStyle(feature, resolution, labelText, labelFont,
                               labelFill, placement, bufferColor,
                               bufferWidth)
