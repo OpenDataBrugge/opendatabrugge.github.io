@@ -6,83 +6,9 @@
         <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <link rel="stylesheet" href="./resources/ol.css">
-        <link rel="stylesheet" href="resources/fontawesome-all.min.css">
-        <link rel="stylesheet" href="./resources/ol3-layerswitcher.css">
-        <link rel="stylesheet" href="./resources/qgis2web.css">
-<style>
-.search-layer {
-  top: 100px;
-  left: .5em;
-}
-.ol-touch .search-layer {
-  top: 130px;
-}
-</style>
-        <style>
-        html, body {
-            background-color: #ffffff;
-        }
-        .ol-control button {
-            background-color: #f8f8f8 !important;
-            color: #000000 !important;
-            border-radius: 0px !important;
-        }
-        .ol-zoom, .geolocate, .gcd-gl-control .ol-control {
-            background-color: rgba(255,255,255,.4) !important;
-            padding: 3px !important;
-        }
-        .ol-scale-line {
-            background: none !important;
-        }
-        .ol-scale-line-inner {
-            border: 2px solid #f8f8f8 !important;
-            border-top: none !important;
-            background: rgba(255, 255, 255, 0.5) !important;
-            color: black !important;
-        }
-        </style>
-<style>
-.tooltip {
-  position: relative;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 4px;
-  color: white;
-  padding: 4px 8px;
-  opacity: 0.7;
-  white-space: nowrap;
-}
-.tooltip-measure {
-  opacity: 1;
-  font-weight: bold;
-}
-.tooltip-static {
-  background-color: #ffcc33;
-  color: black;
-  border: 1px solid white;
-}
-.tooltip-measure:before,
-.tooltip-static:before {
-  border-top: 6px solid rgba(0, 0, 0, 0.5);
-  border-right: 6px solid transparent;
-  border-left: 6px solid transparent;
-  content: "";
-  position: absolute;
-  bottom: -6px;
-  margin-left: -7px;
-  left: 50%;
-}
-.tooltip-static:before {
-  border-top-color: #ffcc33;
-}
-.measure-control {
-  top: 65px;
-  left: .5em;
-}
-.ol-touch .measure-control {
-  top: 80px;
-}
-</style>
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
         <style>
         html, body, #map {
             width: 100%;
@@ -95,20 +21,222 @@
     </head>
     <body>
         <div id="map">
-            <div id="popup" class="ol-popup">
-                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-                <div id="popup-content"></div>
-            </div>
         </div>
-        <script src="resources/qgis2web_expressions.js"></script>
-        <script src="resources/polyfills.js"></script>
-        <script src="./resources/functions.js"></script>
-        <script src="./resources/ol.js"></script>
-        <script src="./resources/ol3-layerswitcher.js"></script>
-        <script src="layers/GemeentegrensOK_0.js"></script><script src="layers/Taxistandplaatsen_3.js"></script><script src="layers/Taxistandplaatsen200m_4.js"></script>
-        <script src="styles/GemeentegrensOK_0_style.js"></script><script src="styles/Taxistandplaatsen_3_style.js"></script><script src="styles/Taxistandplaatsen200m_4_style.js"></script>
-        <script src="./layers/layers.js" type="text/javascript"></script> 
-        <script src="./resources/qgis2web.js"></script>
-        <script src="./resources/Autolinker.min.js"></script>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet.wms.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="data/GemeentegrensOK_0.js"></script>
+        <script src="data/Taxistandplaatsen_2.js"></script>
+        <script src="data/Taxistandplaatsen200m_3.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[51.19336714159736,3.201227320574463],[51.21180299630431,3.240462362117885]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a>');
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        function pop_GemeentegrensOK_0(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? Autolinker.link(String(feature.properties['ID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FEATTYP'] !== null ? Autolinker.link(String(feature.properties['FEATTYP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ORDER00'] !== null ? Autolinker.link(String(feature.properties['ORDER00'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ORDER01'] !== null ? Autolinker.link(String(feature.properties['ORDER01'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ORDER02'] !== null ? Autolinker.link(String(feature.properties['ORDER02'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ORDER03'] !== null ? Autolinker.link(String(feature.properties['ORDER03'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ORDER04'] !== null ? Autolinker.link(String(feature.properties['ORDER04'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ORDER05'] !== null ? Autolinker.link(String(feature.properties['ORDER05'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ORDER06'] !== null ? Autolinker.link(String(feature.properties['ORDER06'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ORDER07'] !== null ? Autolinker.link(String(feature.properties['ORDER07'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ORDER08'] !== null ? Autolinker.link(String(feature.properties['ORDER08'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FEATAREA'] !== null ? Autolinker.link(String(feature.properties['FEATAREA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FEATPERIM'] !== null ? Autolinker.link(String(feature.properties['FEATPERIM'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAME'] !== null ? Autolinker.link(String(feature.properties['NAME'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAMELC'] !== null ? Autolinker.link(String(feature.properties['NAMELC'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POPCLASS'] !== null ? Autolinker.link(String(feature.properties['POPCLASS'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POP'] !== null ? Autolinker.link(String(feature.properties['POP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['MI_PRINX'] !== null ? Autolinker.link(String(feature.properties['MI_PRINX'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_GemeentegrensOK_0_0() {
+            return {
+                pane: 'pane_GemeentegrensOK_0',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 3.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(229,182,54,0.0)',
+            }
+        }
+        map.createPane('pane_GemeentegrensOK_0');
+        map.getPane('pane_GemeentegrensOK_0').style.zIndex = 400;
+        map.getPane('pane_GemeentegrensOK_0').style['mix-blend-mode'] = 'normal';
+        var layer_GemeentegrensOK_0 = new L.geoJson(json_GemeentegrensOK_0, {
+            attribution: '',
+            pane: 'pane_GemeentegrensOK_0',
+            onEachFeature: pop_GemeentegrensOK_0,
+            style: style_GemeentegrensOK_0_0,
+        });
+        bounds_group.addLayer(layer_GemeentegrensOK_0);
+        map.addLayer(layer_GemeentegrensOK_0);
+        var layer_GRBbasiskaartgrijswaarden_1 = L.WMS.layer("http://geoservices.informatievlaanderen.be/raadpleegdiensten/GRB-basiskaart-grijs/wms", "GRB_BSK_GRIJS", {
+            format: 'image/png',
+            uppercase: true,
+            transparent: true,
+            continuousWorld : true,
+            tiled: true,
+            info_format: 'text/html',
+            opacity: 0,
+            identify: false,
+        });
+        map.addLayer(layer_GRBbasiskaartgrijswaarden_1);
+        function pop_Taxistandplaatsen_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['id'] !== null ? Autolinker.link(String(feature.properties['id'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Naam'] !== null ? Autolinker.link(String(feature.properties['Naam'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Taxistandplaatsen_2_0() {
+            return {
+                pane: 'pane_Taxistandplaatsen_2',
+                radius: 2.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(219,30,42,1.0)',
+            }
+        }
+        map.createPane('pane_Taxistandplaatsen_2');
+        map.getPane('pane_Taxistandplaatsen_2').style.zIndex = 402;
+        map.getPane('pane_Taxistandplaatsen_2').style['mix-blend-mode'] = 'normal';
+        var layer_Taxistandplaatsen_2 = new L.geoJson(json_Taxistandplaatsen_2, {
+            attribution: '',
+            pane: 'pane_Taxistandplaatsen_2',
+            onEachFeature: pop_Taxistandplaatsen_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Taxistandplaatsen_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Taxistandplaatsen_2);
+        map.addLayer(layer_Taxistandplaatsen_2);
+        function pop_Taxistandplaatsen200m_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['id'] !== null ? Autolinker.link(String(feature.properties['id'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Naam'] !== null ? Autolinker.link(String(feature.properties['Naam'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Taxistandplaatsen200m_3_0() {
+            return {
+                pane: 'pane_Taxistandplaatsen200m_3',
+                opacity: 1,
+                color: 'rgba(227,26,28,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 5.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(227,26,28,0.0)',
+            }
+        }
+        map.createPane('pane_Taxistandplaatsen200m_3');
+        map.getPane('pane_Taxistandplaatsen200m_3').style.zIndex = 403;
+        map.getPane('pane_Taxistandplaatsen200m_3').style['mix-blend-mode'] = 'normal';
+        var layer_Taxistandplaatsen200m_3 = new L.geoJson(json_Taxistandplaatsen200m_3, {
+            attribution: '',
+            pane: 'pane_Taxistandplaatsen200m_3',
+            onEachFeature: pop_Taxistandplaatsen200m_3,
+            style: style_Taxistandplaatsen200m_3_0,
+        });
+        bounds_group.addLayer(layer_Taxistandplaatsen200m_3);
+        map.addLayer(layer_Taxistandplaatsen200m_3);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/Taxistandplaatsen200m_3.png" /> Taxistandplaatsen200m': layer_Taxistandplaatsen200m_3,'<img src="legend/Taxistandplaatsen_2.png" /> Taxistandplaatsen': layer_Taxistandplaatsen_2,"GRB-basiskaart-grijswaarden": layer_GRBbasiskaartgrijswaarden_1,'<img src="legend/GemeentegrensOK_0.png" /> GemeentegrensOK': layer_GemeentegrensOK_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        </script>
     </body>
 </html>
