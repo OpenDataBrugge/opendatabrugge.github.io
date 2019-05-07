@@ -7,7 +7,8 @@ var jsonSource_B_CaPa_0 = new ol.source.Vector({
 });
 jsonSource_B_CaPa_0.addFeatures(features_B_CaPa_0);var lyr_B_CaPa_0 = new ol.layer.Vector({
                 declutter: true,
-                source:jsonSource_B_CaPa_0, 
+                source:jsonSource_B_CaPa_0, maxResolution:2.80044661523,
+
                 style: style_B_CaPa_0,
                 title: '<img src="styles/legend/B_CaPa_0.png" /> B_CaPa'
             });var format_KAD_CAPAKEY_5_1 = new ol.format.GeoJSON();
