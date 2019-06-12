@@ -8,6 +8,7 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <link rel="stylesheet" href="css/leaflet.css">
         <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
         <style>
         html, body, #map {
             width: 100%;
@@ -30,8 +31,10 @@
         <script src="js/rbush.min.js"></script>
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
-        <script src="data/Gebiedsafbakening_6_Statistische_sectoren_0.js"></script>
-        <script src="data/ontbrekende_statische_sectoren_1.js"></script>
+        <script src="js/leaflet.wms.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/Gebiedsafbakening_6_Statistische_sectoren_1.js"></script>
+        <script src="data/ontbrekende_statische_sectoren_2.js"></script>
         <script>
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
@@ -41,7 +44,18 @@
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
         }
-        function pop_Gebiedsafbakening_6_Statistische_sectoren_0(feature, layer) {
+        var overlay_GRBbasiskaartgrijswaarden_0 = L.WMS.layer("https://geoservices.informatievlaanderen.be/raadpleegdiensten/GRB-basiskaart-grijs/wms?", "GRB_BSK_GRIJS", {
+            format: 'image/png',
+            uppercase: true,
+            transparent: true,
+            continuousWorld : true,
+            tiled: true,
+            info_format: 'text/html',
+            opacity: 1,
+            identify: false,
+        });
+        map.addLayer(overlay_GRBbasiskaartgrijswaarden_0);
+        function pop_Gebiedsafbakening_6_Statistische_sectoren_1(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['LAYER'] !== null ? Autolinker.link(String(feature.properties['LAYER'])) : '') + '</td>\
@@ -74,9 +88,9 @@
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_Gebiedsafbakening_6_Statistische_sectoren_0_0() {
+        function style_Gebiedsafbakening_6_Statistische_sectoren_1_0() {
             return {
-                pane: 'pane_Gebiedsafbakening_6_Statistische_sectoren_0',
+                pane: 'pane_Gebiedsafbakening_6_Statistische_sectoren_1',
                 opacity: 1,
                 color: 'rgba(0,0,0,1.0)',
                 dashArray: '',
@@ -88,18 +102,18 @@
                 fillColor: 'rgba(9,157,147,0.0)',
             }
         }
-        map.createPane('pane_Gebiedsafbakening_6_Statistische_sectoren_0');
-        map.getPane('pane_Gebiedsafbakening_6_Statistische_sectoren_0').style.zIndex = 400;
-        map.getPane('pane_Gebiedsafbakening_6_Statistische_sectoren_0').style['mix-blend-mode'] = 'normal';
-        var layer_Gebiedsafbakening_6_Statistische_sectoren_0 = new L.geoJson(json_Gebiedsafbakening_6_Statistische_sectoren_0, {
+        map.createPane('pane_Gebiedsafbakening_6_Statistische_sectoren_1');
+        map.getPane('pane_Gebiedsafbakening_6_Statistische_sectoren_1').style.zIndex = 401;
+        map.getPane('pane_Gebiedsafbakening_6_Statistische_sectoren_1').style['mix-blend-mode'] = 'normal';
+        var layer_Gebiedsafbakening_6_Statistische_sectoren_1 = new L.geoJson(json_Gebiedsafbakening_6_Statistische_sectoren_1, {
             attribution: '<a href=""></a>',
-            pane: 'pane_Gebiedsafbakening_6_Statistische_sectoren_0',
-            onEachFeature: pop_Gebiedsafbakening_6_Statistische_sectoren_0,
-            style: style_Gebiedsafbakening_6_Statistische_sectoren_0_0,
+            pane: 'pane_Gebiedsafbakening_6_Statistische_sectoren_1',
+            onEachFeature: pop_Gebiedsafbakening_6_Statistische_sectoren_1,
+            style: style_Gebiedsafbakening_6_Statistische_sectoren_1_0,
         });
-        bounds_group.addLayer(layer_Gebiedsafbakening_6_Statistische_sectoren_0);
-        map.addLayer(layer_Gebiedsafbakening_6_Statistische_sectoren_0);
-        function pop_ontbrekende_statische_sectoren_1(feature, layer) {
+        bounds_group.addLayer(layer_Gebiedsafbakening_6_Statistische_sectoren_1);
+        map.addLayer(layer_Gebiedsafbakening_6_Statistische_sectoren_1);
+        function pop_ontbrekende_statische_sectoren_2(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['T_postcode'] !== null ? Autolinker.link(String(feature.properties['T_postcode'])) : '') + '</td>\
@@ -138,9 +152,9 @@
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_ontbrekende_statische_sectoren_1_0() {
+        function style_ontbrekende_statische_sectoren_2_0() {
             return {
-                pane: 'pane_ontbrekende_statische_sectoren_1',
+                pane: 'pane_ontbrekende_statische_sectoren_2',
                 radius: 4.0,
                 opacity: 1,
                 color: 'rgba(0,0,0,1.0)',
@@ -153,48 +167,53 @@
                 fillColor: 'rgba(89,159,121,1.0)',
             }
         }
-        map.createPane('pane_ontbrekende_statische_sectoren_1');
-        map.getPane('pane_ontbrekende_statische_sectoren_1').style.zIndex = 401;
-        map.getPane('pane_ontbrekende_statische_sectoren_1').style['mix-blend-mode'] = 'normal';
-        var layer_ontbrekende_statische_sectoren_1 = new L.geoJson(json_ontbrekende_statische_sectoren_1, {
+        map.createPane('pane_ontbrekende_statische_sectoren_2');
+        map.getPane('pane_ontbrekende_statische_sectoren_2').style.zIndex = 402;
+        map.getPane('pane_ontbrekende_statische_sectoren_2').style['mix-blend-mode'] = 'normal';
+        var layer_ontbrekende_statische_sectoren_2 = new L.geoJson(json_ontbrekende_statische_sectoren_2, {
             attribution: '<a href=""></a>',
-            pane: 'pane_ontbrekende_statische_sectoren_1',
-            onEachFeature: pop_ontbrekende_statische_sectoren_1,
+            pane: 'pane_ontbrekende_statische_sectoren_2',
+            onEachFeature: pop_ontbrekende_statische_sectoren_2,
             pointToLayer: function (feature, latlng) {
                 var context = {
                     feature: feature,
                     variables: {}
                 };
-                return L.circleMarker(latlng, style_ontbrekende_statische_sectoren_1_0(feature));
+                return L.circleMarker(latlng, style_ontbrekende_statische_sectoren_2_0(feature));
             },
         });
-        bounds_group.addLayer(layer_ontbrekende_statische_sectoren_1);
-        map.addLayer(layer_ontbrekende_statische_sectoren_1);
+        bounds_group.addLayer(layer_ontbrekende_statische_sectoren_2);
+        map.addLayer(layer_ontbrekende_statische_sectoren_2);
         var baseMaps = {};
-        L.control.layers(baseMaps,{'<img src="legend/ontbrekende_statische_sectoren_1.png" /> ontbrekende_statische_sectoren': layer_ontbrekende_statische_sectoren_1,'<img src="legend/Gebiedsafbakening_6_Statistische_sectoren_0.png" /> Gebiedsafbakening_6_Statistische_sectoren': layer_Gebiedsafbakening_6_Statistische_sectoren_0,},{collapsed:false}).addTo(map);
+        L.control.layers(baseMaps,{'<img src="legend/ontbrekende_statische_sectoren_2.png" /> ontbrekende_statische_sectoren': layer_ontbrekende_statische_sectoren_2,'<img src="legend/Gebiedsafbakening_6_Statistische_sectoren_1.png" /> Gebiedsafbakening_6_Statistische_sectoren': layer_Gebiedsafbakening_6_Statistische_sectoren_1,"GRB-basiskaart-grijswaarden": overlay_GRBbasiskaartgrijswaarden_0,},{collapsed:false}).addTo(map);
         setBounds();
         var i = 0;
-        layer_Gebiedsafbakening_6_Statistische_sectoren_0.eachLayer(function(layer) {
+        layer_Gebiedsafbakening_6_Statistische_sectoren_1.eachLayer(function(layer) {
             var context = {
                 feature: layer.feature,
                 variables: {}
             };
-            layer.bindTooltip((layer.feature.properties['SEC'] !== null?String('<div style="color: #000000; font-size: 8pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + layer.feature.properties['SEC']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Gebiedsafbakening_6_Statistische_sectoren_0'});
+            layer.bindTooltip((layer.feature.properties['SEC'] !== null?String('<div style="color: #000000; font-size: 8pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + layer.feature.properties['SEC']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Gebiedsafbakening_6_Statistische_sectoren_1'});
             labels.push(layer);
             totalMarkers += 1;
               layer.added = true;
               addLabel(layer, i);
               i++;
         });
-        resetLabels([layer_Gebiedsafbakening6Statistischesectoren_0]);
+        map.addControl(new L.Control.Search({
+            layer: layer_ontbrekende_statische_sectoren_2,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'T_straat'}));
+        resetLabels([layer_Gebiedsafbakening6Statistischesectoren_1]);
         map.on("zoomend", function(){
-            resetLabels([layer_Gebiedsafbakening6Statistischesectoren_0]);
+            resetLabels([layer_Gebiedsafbakening6Statistischesectoren_1]);
         });
         map.on("layeradd", function(){
-            resetLabels([layer_Gebiedsafbakening6Statistischesectoren_0]);
+            resetLabels([layer_Gebiedsafbakening6Statistischesectoren_1]);
         });
         map.on("layerremove", function(){
-            resetLabels([layer_Gebiedsafbakening6Statistischesectoren_0]);
+            resetLabels([layer_Gebiedsafbakening6Statistischesectoren_1]);
         });
         </script>
     </body>
